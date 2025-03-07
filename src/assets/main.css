@@ -1,18 +1,31 @@
 @import './base.css';
 
 #app {
-    max-width: 1280px;
     margin: 0 auto;
-    padding: 2rem;
     font-weight: normal;
 }
 
-a,
-.green {
+a {
     text-decoration: none;
-    color: hsla(160, 100%, 37%, 1);
+    color: var(--color-primary);
     transition: 0.4s;
     padding: 3px;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-sm);
+}
+
+h1 {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-secondary);
+}
+
+h2 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-primary);
 }
 
 @media (hover: hover) {
@@ -30,6 +43,5 @@ a,
     #app {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        padding: 0 2rem;
     }
 }

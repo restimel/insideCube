@@ -1,85 +1,60 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
-import HelloWorld from './components/HelloWorld.vue';
+import { RouterView } from 'vue-router';
+import AppHeader from './components/AppHeader.vue';
 </script>
 
 <template>
-    <header>
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-        <div class="wrapper">
-            <HelloWorld msg="You did it!" />
-
-            <nav>
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/about">About</RouterLink>
-            </nav>
-        </div>
-    </header>
-
-    <RouterView />
+    <section class="app">
+        <AppHeader />
+        <main>
+            <RouterView />
+        </main>
+        <footer>
+            <p>
+                &copy; {{ new Date().getFullYear() }}.
+                This project is open source under the MIT License.
+                <a href="https://github.com/restimel/insideCube">Contribute on GitHub</a>!
+                <i class="cookie">
+                    No cookies inside!
+                </i>
+            </p>
+        </footer>
+    </section>
 </template>
 
 <style scoped>
+
+/* Grid layout to keep header and footer always visible */
+.app {
+    display: grid;
+    grid-template-rows: var(--header-height) 1fr var(--footer-height);
+    min-height: 100vh;
+    width: 100vw;
+}
+
 header {
-    line-height: 1.5;
-    max-height: 100vh;
+    grid-row: 1;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.logo {
-    display: block;
-    margin: 0 auto 2rem;
+main {
+    grid-row: 2;
+    overflow: auto;
+    padding: var(--spacing-sm);
 }
 
-nav {
-    width: 100%;
-    font-size: 12px;
+footer {
+    grid-row: 3;
+    background-color: var(--color-secondary);
+    color: var(--color-text-secondary);
     text-align: center;
-    margin-top: 2rem;
+    padding: var(--spacing-xs);
 }
 
-nav a.router-link-exact-active {
-    color: var(--color-text);
+.cookie {
+    margin-inline-start: var(--spacing-lg);
 }
 
-nav a.router-link-exact-active:hover {
-    background-color: transparent;
-}
-
-nav a {
-    display: inline-block;
-    padding: 0 1rem;
-    border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-    border: 0;
-}
-
-@media (min-width: 1024px) {
-    header {
-        display: flex;
-        place-items: center;
-        padding-right: calc(var(--section-gap) / 2);
-    }
-
-    .logo {
-        margin: 0 2rem 0 0;
-    }
-
-    header .wrapper {
-        display: flex;
-        place-items: flex-start;
-        flex-wrap: wrap;
-    }
-
-    nav {
-        text-align: left;
-        margin-left: -1rem;
-        font-size: 1rem;
-
-        padding: 1rem 0;
-        margin-top: 1rem;
-    }
-}
 </style>
