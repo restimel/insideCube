@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import AppHeader from './components/AppHeader.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -12,10 +15,12 @@ import AppHeader from './components/AppHeader.vue';
         <footer>
             <p>
                 &copy; {{ new Date().getFullYear() }}.
-                This project is open source under the MIT License.
-                <a href="https://github.com/restimel/insideCube">Contribute on GitHub</a>!
+                {{ t('footer.openSource') }}
+                <a href="https://github.com/restimel/insideCube">
+                    {{ t('footer.contribute') }}
+                </a>!
                 <i class="cookie">
-                    No cookies inside!
+                    {{ t('footer.cookies') }}
                 </i>
             </p>
         </footer>

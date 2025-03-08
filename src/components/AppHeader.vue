@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
+import LanguageSelector from './LanguageSelector.vue';
+
+const { t } = useI18n();
 
 const isMenuOpen = ref(false);
 
@@ -26,9 +30,10 @@ const toggleMenu = () => {
             <!-- Navigation Menu -->
             <nav :class="{ 'open': isMenuOpen }">
                 <ul>
-                    <li><RouterLink to="/manage">Cube Manager</RouterLink></li>
-                    <li><RouterLink to="/lost">Lost in cube?</RouterLink></li>
-                    <li><RouterLink to="/help">Help</RouterLink></li>
+                    <li><RouterLink to="/manage">{{ t('header.manage') }}</RouterLink></li>
+                    <li><RouterLink to="/lost">{{ t('header.lost') }}</RouterLink></li>
+                    <li><RouterLink to="/help">{{ t('header.help') }}</RouterLink></li>
+                    <li><LanguageSelector /></li>
                 </ul>
             </nav>
         </div>
