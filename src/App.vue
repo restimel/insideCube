@@ -33,7 +33,7 @@ const { t } = useI18n();
 .app {
     display: grid;
     grid-template-rows: var(--header-height) 1fr var(--footer-height);
-    min-height: 100vh;
+    height: 100vh;
     width: 100vw;
 }
 
@@ -48,6 +48,7 @@ main {
     grid-row: 2;
     overflow: auto;
     padding: var(--spacing-sm);
+    height: 100%;
 }
 
 footer {

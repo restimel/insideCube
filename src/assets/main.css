@@ -28,9 +28,36 @@ h2 {
     color: var(--color-primary);
 }
 
+button.primary-button {
+    --button-bg-color: var(--color-primary);
+    --button-color: var(--color-text-primary);
+}
+
+button {
+    --button-bg-color: var(--color-secondary);
+    --button-color: var(--color-text-secondary);
+    --button-bg-color-hover: hsl(from var(--button-bg-color) h s calc(l - 15));
+
+    background-color: var(--button-bg-color);
+    color: var(--button-color);
+    transition: background-color 0.3s;
+}
+
+.success {
+    color: var(--color-success);
+}
+
+.error {
+    color: var(--color-error);
+}
+
 @media (hover: hover) {
     a:hover {
-        background-color: var(--color-primary-hover);
+        background-color: var(--color-primary-inline-hover);
+    }
+
+    button:hover {
+        background-color: var(--button-bg-color-hover);
     }
 }
 

@@ -66,7 +66,7 @@ const changeLanguage = (lang: Language) => {
 }
 
 .language-options button:hover {
-    background-color: var(--color-primary-hover);
+    background-color: var(--color-primary-inline-hover);
 }
 
 @media (max-width: 768px) {

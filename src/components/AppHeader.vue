@@ -32,6 +32,7 @@ const toggleMenu = () => {
                 <ul>
                     <li><RouterLink to="/manage">{{ t('header.manage') }}</RouterLink></li>
                     <li><RouterLink to="/lost">{{ t('header.lost') }}</RouterLink></li>
+                    <li><RouterLink to="/import">{{ t('header.import') }}</RouterLink></li>
                     <li><RouterLink to="/help">{{ t('header.help') }}</RouterLink></li>
                     <li><LanguageSelector /></li>
                 </ul>

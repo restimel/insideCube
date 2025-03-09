@@ -23,6 +23,10 @@ InsideCube also allows you to find your ball inside your cube and gives you inst
 
 Online access: https://restimel.github.io/insideCube/
 
+This project is an upgrade of [InsideWeCube](https://github.com/restimel/insideWeCube)
+
 ## Development
 
 To install an use the project read [the development section](./docs/Development.md).
+
+Every contributions will be appreciate 🙂

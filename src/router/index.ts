@@ -25,6 +25,11 @@ const router = createRouter({
             component: () => import('../views/LostView.vue'),
         },
         {
+            path: '/import',
+            name: 'import',
+            component: () => import('../views/ImportView.vue'),
+        },
+        {
             path: '/help',
             name: 'help',
             component: () => import('../views/HelpView.vue'),
