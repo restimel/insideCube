@@ -56,7 +56,7 @@
                 </button>
                 <MessageDisplay
                     :message="importMessage"
-                    :type="importError ? 'error' : 'success'"
+                    :type="importTypeMessage"
                     @dismissed="importMessage = ''"
                 />
             </div>
@@ -133,16 +133,11 @@ const { t } = useI18n();
 /* Initialize the cube store */
 const cubeStore = useCubeStore();
 
-/* Load cubes on component mount */
-onMounted(() => {
-    // If you have any initialization logic, put it here
-});
-
 /* References to store values */
 const cubes = computed(() => cubeStore.cubes);
 const activeCube = computed(() => cubeStore.activeCube);
 
-/* Selected cube handling */
+/* {{{ Selected cube handling */
 const selectedCubeName = ref<CubeName | null>(activeCube.value?.name || null);
 
 /* Handle cube selection change */
@@ -152,10 +147,11 @@ const handleCubeChange = () => {
     }
 };
 
-/* Import functionality */
+/* }}} */
+/* {{{ Import functionality */
 const importJson = ref('');
 const importMessage = ref('');
-const importError = ref(false);
+const importTypeMessage = ref<MessageType>('success');
 const replaceExisting = ref(true);
 
 /* Import cubes from JSON */
@@ -163,26 +159,31 @@ const importCubes = () => {
     try {
         if (!importJson.value.trim()) {
             importMessage.value = t('messages.enterJsonData');
-            importError.value = true;
+            importTypeMessage.value = 'error';
             return;
         }
 
-        const success = cubeStore.import(importJson.value, replaceExisting.value);
+        const result = cubeStore.import(importJson.value, replaceExisting.value);
 
-        if (success) {
-            importMessage.value = t('messages.importSuccess');
-            importError.value = false;
+        if (result.type === 'success') {
+            importMessage.value = t(result.message, result.details as number);
+            importTypeMessage.value = result.type;
             importJson.value = '';
         } else {
-            throw new Error(t('messages.importFailed'));
+            importMessage.value = t(result.message, { details: result.details });
+            importTypeMessage.value = result.type;
         }
     } catch (err) {
-        importMessage.value = t('messages.importError', { error: err instanceof Error ? err.message : t('messages.invalidJsonFormat') });
-        importError.value = true;
+        const errorMessage = (err as Error)?.message ?? '';
+        importMessage.value = t('messages.importError', {
+            error: errorMessage,
+        });
+        importTypeMessage.value = 'error';
     }
 };
 
-/* Export functionality */
+/* }}} */
+/* {{{ Export functionality */
 const exportJson = ref('');
 const exportMessage = ref('');
 const exportMessageType = ref<MessageType>('success');
@@ -248,6 +249,8 @@ const copyToClipboard = () => {
             exportMessageType.value = 'error';
         });
 };
+
+/* }}} */
 </script>
 
 <style scoped>

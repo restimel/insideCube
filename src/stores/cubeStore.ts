@@ -106,8 +106,9 @@ export const useCubeStore = defineStore('cube', {
             return JSON.stringify(list);
         },
 
-        import(data: string | null, replace = false): boolean {
+        import(data: string | null, replace = false): ActionResult {
             const skipped: CubeName[] = [];
+            let importedCubes = 0;
 
             if (data) {
                 try {
@@ -118,23 +119,44 @@ export const useCubeStore = defineStore('cube', {
                         if (this.cubes.has(cube.name)) {
                             if (replace) {
                                 this.setCube(cube);
+                                importedCubes++;
                             } else {
                                 skipped.push(cube.name);
                             }
                         } else {
                             this.setCube(cube);
+                            importedCubes++;
                         }
                     }
-                } catch {
-                    return false;
+                } catch (err) {
+                    return {
+                        type: 'error',
+                        message: 'messages.invalidJsonFormat',
+                        details: (err as Error).message,
+                    };
                 }
 
                 /* TODO return skipped value */
                 this.saveCubesToLocalStorage();
-                return true;
+                if (skipped.length) {
+                    return {
+                        type: 'warning',
+                        message: 'messages.skippingCubes',
+                        details: skipped,
+                    };
+                }
+
+                return {
+                    type: 'success',
+                    message: 'messages.importSuccess',
+                    details: importedCubes,
+                };
             }
 
-            return false;
+            return {
+                type: 'warning',
+                message: 'messages.enterJsonData',
+            };
         },
 
         /* Locale persistency */
@@ -145,10 +167,10 @@ export const useCubeStore = defineStore('cube', {
             /* TODO save active cube */
         },
 
-        loadCubesFromLocalStorage(): boolean {
+        loadCubesFromLocalStorage() {
             const savedCubes = localStorage.getItem('cubes');
 
-            return this.import(savedCubes);
+            this.import(savedCubes);
         },
     },
 });

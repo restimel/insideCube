@@ -2,6 +2,8 @@
     <span v-if="visible"
         :class="['message', type]"
         @click="clearMessage"
+        @mouseover="stopTimer"
+        @mouseleave="startTimer"
     >
         {{ message }}
     </span>
@@ -30,18 +32,26 @@ const clearMessage = () => {
     emit('dismissed');
 };
 
+function stopTimer() {
+    clearTimeout(timeoutId.value);
+}
+
+function startTimer() {
+    if (visible.value) {
+        stopTimer();
+        timeoutId.value = setTimeout(clearMessage, props.duration || 5000);
+    }
+}
+
 watch(() => props.message, (newMessage) => {
     if (newMessage) {
         visible.value = true;
-
-        clearTimeout(timeoutId.value);
-
-        timeoutId.value = setTimeout(clearMessage, props.duration || 5000);
+        startTimer();
     }
 }, { immediate: true });
 
 onBeforeUnmount(() => {
-    clearTimeout(timeoutId.value);
+    stopTimer();
 });
 </script>
 
