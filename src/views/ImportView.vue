@@ -45,7 +45,7 @@
                     {{ t('cube.edition.replace') }}
                 </label>
             </div>
-            <div class="actions">
+            <template #footer>
                 <button @click="importCubes" class="action-button primary-button">
                     {{ t('actions.import') }}
                 </button>
@@ -54,7 +54,7 @@
                     :type="importTypeMessage"
                     @dismissed="importMessage = ''"
                 />
-            </div>
+            </template>
         </BoxSection>
 
         <!-- Export cubes -->
@@ -107,7 +107,7 @@
                 :placeholder="t('cube.exportJson')"
                 class="json-textarea"
             ></textarea>
-            <div class="actions">
+            <template #footer>
                 <button @click="copyToClipboard" class="action-button primary-button">
                     {{ t('actions.copy') }}
                 </button>
@@ -116,7 +116,7 @@
                     :type="exportMessageType"
                     @dismissed="exportMessage = ''"
                 />
-            </div>
+            </template>
         </BoxSection>
     </div>
 </template>
@@ -125,7 +125,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useCubeStore } from '@/stores/cubeStore';
 import type { CubeName } from '@/types/Cube';
-import BoxSection from '@/components/scaffold/boxSection.vue';
+import BoxSection from '@/components/scaffold/panelSection.vue';
 import { useI18n } from 'vue-i18n';
 import MessageDisplay from '@/components/MessageDisplay.vue';
 import CubeLogo from '@/components/cubeLogo.vue';
@@ -313,18 +313,8 @@ const copyToClipboard = () => {
     padding: var(--field-padding);
     border-radius: var(--border-radius-sm);
     border: var(--field-border);
-    margin-bottom: var(--field-margin);
     font-family: var(--font-code);
     resize: vertical;
-}
-
-.checkbox-option {
-    margin-bottom: var(--field-margin);
-}
-
-.actions {
-    display: flex;
-    align-items: center;
 }
 
 .action-button {

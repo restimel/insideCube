@@ -23,11 +23,6 @@ h1 {
     color: var(--color-secondary);
 }
 
-h2 {
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-primary);
-}
-
 button.primary-button {
     --button-bg-color: var(--color-primary);
     --button-color: var(--color-text-primary);
@@ -50,6 +45,30 @@ button {
 .error {
     color: var(--color-error);
 }
+
+/* {{{ Form groups */
+
+.form-group {
+    margin-bottom: var(--field-margin);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.form-group input[type="text"],
+.form-group select {
+    width: 100%;
+    padding: var(--field-padding);
+    border: var(--field-border);
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-text);
+    font-size: var(--font-size-md);
+}
+
+/* }}} */
 
 @media (hover: hover) {
     a:hover {
