@@ -5,12 +5,7 @@
             <div v-if="cubes.size > 0"
                 class="active-cube"
             >
-                <div
-                    class="cube-presentation"
-                    :style="`--color: ${activeCube?.color}`"
-                >
-                    {{ activeCube?.name.charAt(0) || '?' }}
-                </div>
+                <CubeLogo :cube="activeCube" />
                 <div class="cube-info">
                     <div class="cube-name">{{ activeCube?.name || t('cube.noSelection') }}</div>
                     <div class="cube-details" v-if="activeCube">
@@ -133,6 +128,7 @@ import type { CubeName } from '@/types/Cube';
 import BoxSection from '@/components/scaffold/boxSection.vue';
 import { useI18n } from 'vue-i18n';
 import MessageDisplay from '@/components/MessageDisplay.vue';
+import CubeLogo from '@/components/cubeLogo.vue';
 
 const { t } = useI18n();
 
@@ -286,23 +282,6 @@ const copyToClipboard = () => {
     display: flex;
     align-items: center;
     margin-block-end: var(--spacing-xs);
-}
-
-.cube-presentation {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--border-radius);
-    --cube-color: var(--color, var(--vt-c-text-light-2));
-    background-color: var(--cube-color);
-    /* use black color if the color is light
-     * and white if the color is dark */
-    color: hsl(from var(--cube-color) 0 0 calc(clamp(0, 60 - l, 1) * 100%));
-    font-weight: bold;
-    font-size: var(--font-size-lg);
-    margin-inline-end: var(--spacing-sm);
 }
 
 .cube-info {
