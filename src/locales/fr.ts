@@ -13,6 +13,7 @@ export default {
     },
     cube: {
         active: 'Cube sélectionné',
+        cubes: 'Aucun cube | 1 cube | {count} cubes',
         export: 'Exporter des Cubes',
         exportJson: 'Le JSON exporté apparaitra ici...',
         import: 'Importer des Cubes',

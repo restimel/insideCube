@@ -75,21 +75,22 @@
                         <input
                             type="checkbox"
                             v-model="selectAll"
-                            @change="toggleSelectAll"
                         >
                         {{ t('actions.selectAll') }}
                     </label>
                 </div>
-                <div class="cube-list" v-if="cubes.size > 0">
-                    <div
-                        v-for="[cubeName, cube] in cubes"
+                <div v-if="cubes.size > 0"
+                    class="cube-list"
+                >
+                    <div v-for="[cubeName, cube] in cubes"
                         :key="cubeName"
                         class="cube-item"
                     >
                         <label class="cube-checkbox">
                             <input
                                 type="checkbox"
-                                v-model="selectedCubesForExport[cubeName]"
+                                :checked="selectedCubesForExport.has(cubeName)"
+                                @input="toggleSelection(cubeName)"
                             >
                             <span class="cube-label">{{ cubeName }}</span>
                             <span class="cube-color-dot" :style="`--cube-color: ${cube.color}`"></span>
@@ -99,6 +100,11 @@
                 <div v-else class="no-cubes">
                     {{ t('cube.noCubes') }}
                 </div>
+                <aside v-if="selectedCubesForExport.size"
+                    class="selected-cubes-info"
+                >
+                    {{ t('cube.cubes', { count: selectedCubesForExport.size }) }}
+                </aside>
             </div>
             <textarea
                 v-model="exportJson"
@@ -138,6 +144,7 @@ const cubes = computed(() => cubeStore.cubes);
 const activeCube = computed(() => cubeStore.activeCube);
 
 /* {{{ Selected cube handling */
+
 const selectedCubeName = ref<CubeName | null>(activeCube.value?.name || null);
 
 /* Handle cube selection change */
@@ -149,12 +156,13 @@ const handleCubeChange = () => {
 
 /* }}} */
 /* {{{ Import functionality */
+
 const importJson = ref('');
 const importMessage = ref('');
 const importTypeMessage = ref<MessageType>('success');
 const replaceExisting = ref(true);
 
-/* Import cubes from JSON */
+/** Import cubes from JSON */
 const importCubes = () => {
     try {
         if (!importJson.value.trim()) {
@@ -184,41 +192,53 @@ const importCubes = () => {
 
 /* }}} */
 /* {{{ Export functionality */
+
 const exportJson = ref('');
 const exportMessage = ref('');
 const exportMessageType = ref<MessageType>('success');
-const selectedCubesForExport = ref<Record<string, boolean>>({});
-const selectAll = ref(false);
+const selectedCubesForExport = ref<Set<CubeName>>(new Set());
+const selectAll = computed({
+    get: () => {
+        return Array.from(cubes.value.keys()).every((cubeName) => selectedCubesForExport.value.has(cubeName));
+    },
+    set: (value: boolean) => {
+        if (value) {
+            for (const cubeName of cubes.value.keys()) {
+                selectedCubesForExport.value.add(cubeName);
+            }
+        } else {
+            selectedCubesForExport.value.clear();
+        }
+    },
+});
 
 watch(selectedCubesForExport, () => {
     exportSelectedCubes();
 }, { deep: true });
 
-/* Initialize checkboxes for all cubes */
+/** Initialize checkboxes for all cubes */
 const initializeCheckboxes = () => {
     for (const [cubeName] of cubes.value) {
-        if (selectedCubesForExport.value[cubeName as string] === undefined) {
-            selectedCubesForExport.value[cubeName as string] = selectAll.value;
+        if (!selectedCubesForExport.value.has(cubeName)) {
+            selectedCubesForExport.value.add(cubeName);
         }
     }
 };
 
-/* Run initialization when cubes change */
 onMounted(initializeCheckboxes);
-/* Watch for new cubes - would typically use watch() here */
 
-/* Toggle all cube selections */
-const toggleSelectAll = () => {
-    for (const [cubeName] of cubes.value) {
-        selectedCubesForExport.value[cubeName as string] = selectAll.value;
+/** Toggle 1 cube selection */
+const toggleSelection = (cubeName: CubeName) => {
+    if (selectedCubesForExport.value.has(cubeName)) {
+        selectedCubesForExport.value.delete(cubeName);
+    } else {
+        selectedCubesForExport.value.add(cubeName);
     }
 };
 
-/* Export selected cubes */
+/** Export selected cubes */
 const exportSelectedCubes = () => {
-    const selectedCubeNames = Object.entries(selectedCubesForExport.value)
-        .filter(([, isSelected]) => isSelected)
-        .map(([cubeName]) => cubeName as CubeName);
+    const selectedCubeNames = Array.from(selectedCubesForExport.value);
 
     if (selectedCubeNames.length === 0) {
         exportJson.value = '';
@@ -231,7 +251,7 @@ const exportSelectedCubes = () => {
     exportMessage.value = '';
 };
 
-/* Copy JSON to clipboard */
+/** Copy JSON to clipboard */
 const copyToClipboard = () => {
     if (!exportJson.value) {
         exportMessage.value = t('messages.nothingToCopy');
@@ -390,6 +410,7 @@ const copyToClipboard = () => {
     background-color: var(--cube-color);
 }
 
+.selected-cubes-info,
 .no-cubes {
     color: var(--color-text-information);
     font-style: italic;
