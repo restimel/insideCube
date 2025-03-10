@@ -16,7 +16,7 @@ export default {
         export: 'Export Cubes',
         exportJson: 'Exported JSON will appear here...',
         import: 'Import Cubes',
-        levels: '{total} levels',
+        levels: 'no levels | 1 level | {count} levels',
         noCubes: 'No cubes available',
         noSelection: 'No cube selected',
         pasteJSON: 'Paste your cube JSON here...',

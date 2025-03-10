@@ -1,36 +1,29 @@
-<!-- src/components/AppHeader.vue -->
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import {
-    useLanguageStore,
-    type Language,
-    locales,
-} from '../stores/languageStore';
-
-const { t, locale } = useI18n();
-
-const languageStore = useLanguageStore();
-
-const changeLanguage = (lang: Language) => {
-    languageStore.setLanguage(lang);
-    locale.value = lang;
-};
-</script>
-
 <template>
     <div class="language-selector">
         <span>{{ t('header.language') }}:</span>
         <div class="language-options">
-            <button v-for="lang of locales"
+            <button v-for="lang of availableLocales"
                 :key="`locale-key-${lang}`"
                 @click="changeLanguage(lang)"
-                :class="{ active: languageStore.currentLanguage === lang }"
+                :class="{ active: locale === lang }"
             >
                 {{ lang.toLocaleUpperCase(lang) }}
             </button>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t, locale, availableLocales } = useI18n();
+
+const changeLanguage = (lang: string) => {
+    locale.value = lang;
+    localStorage.setItem('language', lang);
+};
+</script>
+
 <style scoped>
 .language-selector {
     display: flex;
@@ -39,7 +32,6 @@ const changeLanguage = (lang: Language) => {
 
 .language-selector span {
     margin-right: var(--spacing-xs);
-    /* color: var(--color-white); */
 }
 
 .language-options {

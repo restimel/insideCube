@@ -14,7 +14,7 @@
                 <div class="cube-info">
                     <div class="cube-name">{{ activeCube?.name || t('cube.noSelection') }}</div>
                     <div class="cube-details" v-if="activeCube">
-                        {{ t('cube.levels', {total: activeCube.levels.length}) }}
+                        {{ t('cube.levels', activeCube.levels.length) }}
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@ const handleCubeChange = () => {
 const importJson = ref('');
 const importMessage = ref('');
 const importError = ref(false);
-const replaceExisting = ref(false);
+const replaceExisting = ref(true);
 
 /* Import cubes from JSON */
 const importCubes = () => {
@@ -176,8 +176,8 @@ const importCubes = () => {
         } else {
             throw new Error(t('messages.importFailed'));
         }
-    } catch (e) {
-        importMessage.value = t('messages.importError', { error: e instanceof Error ? e.message : t('messages.invalidJsonFormat') });
+    } catch (err) {
+        importMessage.value = t('messages.importError', { error: err instanceof Error ? err.message : t('messages.invalidJsonFormat') });
         importError.value = true;
     }
 };

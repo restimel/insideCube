@@ -49,20 +49,35 @@ export const useCubeStore = defineStore('cube', {
             if (name !== cube.name) {
                 this.cubes.delete(name);
             }
+
+            this.setDefaultCube(cube.name);
+            this.saveCubesToLocalStorage();
         },
 
-        setDefaultCube() {
+        setDefaultCube(cubeName?: CubeName) {
             if (!this.activeCube) {
-                const firstCube = this.cubes.values().next().value;
+                if (cubeName) {
+                    const cube = this.getCubeByName(cubeName);
 
-                if (firstCube) {
-                    this.activeCube = firstCube;
+                    if (cube) {
+                        this.activeCube = cube;
+                    }
+                } else {
+                    const firstCube = this.cubes.values().next().value;
+
+                    if (firstCube) {
+                        this.activeCube = firstCube;
+                    }
                 }
             }
         },
 
         deleteCube(cube: Cube): boolean {
-            return this.cubes.delete(cube.name);
+            const result = this.cubes.delete(cube.name);
+
+            this.setDefaultCube();
+            this.saveCubesToLocalStorage();
+            return result;
         },
 
         selectCube(cube: Cube | CubeName) {
@@ -114,7 +129,8 @@ export const useCubeStore = defineStore('cube', {
                     return false;
                 }
 
-                /* TODO use skipped */
+                /* TODO return skipped value */
+                this.saveCubesToLocalStorage();
                 return true;
             }
 
@@ -126,6 +142,7 @@ export const useCubeStore = defineStore('cube', {
             const json = this.export();
 
             localStorage.setItem('cubes', json);
+            /* TODO save active cube */
         },
 
         loadCubesFromLocalStorage(): boolean {
