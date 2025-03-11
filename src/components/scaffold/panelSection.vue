@@ -32,14 +32,13 @@ const slots = useSlots();
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
-    display: flex
-;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: max-content 1fr max-content;
+    height: 100%;
 }
 
 .panel-header {
-    display: flex
-;
+    display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-sm);
@@ -49,6 +48,7 @@ const slots = useSlots();
 
 .panel-content {
     padding: var(--section-padding);
+    overflow-y: auto;
 }
 
 .panel-footer {

@@ -1,15 +1,25 @@
 export default {
+    footer: {
+        contribute: 'Contribuez sur GitHub',
+        cookies: 'Pas de cookies à l\'intérieur !',
+        openSource: 'Ce projet est open source sous la licence MIT.',
+    },
     header: {
         help: '?',
         import: 'Import/Export',
         language: 'Langue',
-        lost: 'Perdu dans son cube ?',
+        lost: 'Perdu dans son cube ?',
         manage: 'Gérer son cube',
     },
-    footer: {
-        contribute: 'Contribuez sur GitHub',
-        cookies: 'Pas de cookies!',
-        openSource: 'Ce projet est open source sous la licence MIT.',
+    manage: {
+        actions: 'Actions',
+        configuration: 'Configuration',
+        editingTools: 'Outils d\'édition',
+        history: 'Historique',
+        information: 'Information',
+        preview: 'Prévisualisation',
+        properties: 'Propriétés du cube',
+        statistics: 'Statistiques',
     },
     cube: {
         active: 'Cube sélectionné',
@@ -22,13 +32,30 @@ export default {
         noSelection: 'Aucun cube sélectionné',
         pasteJSON: 'Copiez votre JSON décrivant vos cubes ici...',
         edition: {
-            replace: 'Remplacer les cubes existant',
+            replace: 'Remplacer les cubes existants',
         },
     },
     actions: {
         copy: 'Copier',
         import: 'Importer',
+        load: 'Charger',
+        reset: 'Réinitialiser',
+        redo: 'Rétablir',
+        save: 'Sauvegarder',
         selectAll: 'Tout sélectionner',
+        undo: 'Annuler',
+    },
+    fields: {
+        color: 'Couleur :',
+        complexity: 'Complexité :',
+        name: 'Nom :',
+        placeholderName: 'Entrez un nom',
+    },
+    history: {
+        loadCube: 'Cube "{name}" chargé',
+        reset: 'Réinitialisation du cube "{name}"',
+        saveCube: 'Cube "{name}" sauvegardé',
+        updateCube: 'Propriété {property} mise à jour',
     },
     messages: {
         copiedToClipboard: 'Copié dans le presse-papiers !',

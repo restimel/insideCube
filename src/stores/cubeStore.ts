@@ -1,18 +1,55 @@
 import { defineStore } from 'pinia';
 import type {
     Cube,
+    CubeHistory,
     CubeName,
 } from '@/types/Cube';
 
 type CubeState = {
     cubes: Map<CubeName, Cube>;
     activeCube: Cube | null;
+    history: CubeHistory[];
+    historyIndex: number;
+    tool: string;
 };
+
+/**
+ * Creates a deep copy of a given Cube object.
+ *
+ * @param cube - The Cube object to be copied.
+ * @returns A new Cube object that is a deep copy of the input cube.
+ */
+function copyCube(cube: Cube): Cube {
+    return {
+        name: cube.name,
+        color: cube.color,
+        levels: cube.levels.map((level) => ({
+            name: level.name,
+            cells: level.cells.map((row) => [...row]),
+        })),
+    };
+}
+
+/**
+ * Creates a new Cube object with default values.
+ *
+ * @returns A new Cube object with default name, color, and empty levels.
+ */
+function createNewCube(): Cube {
+    return {
+        name: '',
+        color: '#000000',
+        levels: [],
+    };
+}
 
 export const useCubeStore = defineStore('cube', {
     state: (): CubeState => ({
         cubes: new Map(),
         activeCube: null,
+        history: [],
+        historyIndex: -1,
+        tool: 'hole',
     }),
 
     getters: {
@@ -41,8 +78,12 @@ export const useCubeStore = defineStore('cube', {
             return this.cubes.get(name);
         },
 
-        setCube(cube: Cube, oldName?: CubeName) {
+        setCube(cube: Cube, oldName?: CubeName): boolean {
             const name = oldName || cube.name;
+
+            if (!name) {
+                return false;
+            }
 
             this.cubes.set(name, cube);
 
@@ -52,6 +93,8 @@ export const useCubeStore = defineStore('cube', {
 
             this.setDefaultCube(cube.name);
             this.saveCubesToLocalStorage();
+
+            return true;
         },
 
         setDefaultCube(cubeName?: CubeName) {
@@ -60,16 +103,20 @@ export const useCubeStore = defineStore('cube', {
                     const cube = this.getCubeByName(cubeName);
 
                     if (cube) {
-                        this.activeCube = cube;
+                        this.activeCube = copyCube(cube);
                     }
                 } else {
                     const firstCube = this.cubes.values().next().value;
 
                     if (firstCube) {
-                        this.activeCube = firstCube;
+                        this.activeCube = copyCube(firstCube);
                     }
                 }
             }
+        },
+
+        createNewCube() {
+            this.activeCube = createNewCube();
         },
 
         deleteCube(cube: Cube): boolean {
@@ -171,6 +218,52 @@ export const useCubeStore = defineStore('cube', {
             const savedCubes = localStorage.getItem('cubes');
 
             this.import(savedCubes);
+        },
+
+        /* History */
+        addToHistory(description: string, notUndoable = false) {
+            if (this.activeCube === null) {
+                return;
+            }
+
+            const historyIndex = this.historyIndex;
+            const history = this.history;
+
+            /* If we're in the middle of the history, truncate the future */
+            if (historyIndex < history.length - 1) {
+                this.history = history.slice(0, historyIndex + 1);
+            }
+
+            this.history.push({
+                timestamp: new Date(),
+                description,
+                cube: copyCube(this.activeCube),
+                notUndoable,
+            });
+
+            this.historyIndex = this.history.length - 1;
+        },
+
+        undo(index?: number) {
+            if (index === undefined) {
+                index = this.historyIndex - 1;
+            }
+
+            if (index >= 0 && index < this.history.length) {
+                this.historyIndex = index;
+                this.activeCube = copyCube(this.history[this.historyIndex].cube);
+            }
+        },
+
+        redo(index?: number) {
+            if (index === undefined) {
+                index = this.historyIndex + 1;
+            }
+
+            if (index >= 0 && index < this.history.length) {
+                this.historyIndex = index;
+                this.activeCube = copyCube(this.history[this.historyIndex].cube);
+            }
         },
     },
 });

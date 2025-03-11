@@ -11,6 +11,16 @@ export default {
         lost: 'Lost in cube?',
         manage: 'Cube Manager',
     },
+    manage: {
+        actions: 'Actions',
+        configuration: 'Configuration',
+        editingTools: 'Editing tools',
+        history: 'History',
+        information: 'Information',
+        preview: 'Preview',
+        properties: 'Cube properties',
+        statistics: 'Statistics',
+    },
     cube: {
         active: 'Active Cube',
         cubes: 'No cubes | 1 cube | {count} cubes',
@@ -28,7 +38,24 @@ export default {
     actions: {
         copy: 'Copy',
         import: 'Import',
+        load: 'Load',
+        reset: 'Reset',
+        redo: 'Redo',
+        save: 'Save',
         selectAll: 'Select all',
+        undo: 'Undo',
+    },
+    fields: {
+        color: 'Color:',
+        complexity: 'Complexity:',
+        name: 'Name:',
+        placeholderName: 'Enter a name',
+    },
+    history: {
+        loadCube: 'Loaded cube "{name}"',
+        reset: 'Reset cube "{name}"',
+        saveCube: 'Saved cube "{name}"',
+        updateCube: 'Updated cube {property}',
     },
     messages: {
         copiedToClipboard: 'Copied to clipboard!',

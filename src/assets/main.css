@@ -32,10 +32,21 @@ button {
     --button-bg-color: var(--color-secondary);
     --button-color: var(--color-text-secondary);
     --button-bg-color-hover: hsl(from var(--button-bg-color) h s calc(l - 15));
+    --button-bg-color-active: hsl(from var(--button-bg-color) h s calc(l + 15));
 
     background-color: var(--button-bg-color);
     color: var(--button-color);
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: bold;
     transition: background-color 0.3s;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .success {
@@ -75,8 +86,12 @@ button {
         background-color: var(--color-primary-inline-hover);
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
         background-color: var(--button-bg-color-hover);
+    }
+
+    button:active:not(:disabled) {
+        background-color: var(--button-bg-color-active);
     }
 }
 
