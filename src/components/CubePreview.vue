@@ -10,7 +10,7 @@ import type {
     Shape,
     ShapeProjection,
 } from '@/types/Geometries.d';
-import { shapeProjection } from '@/helpers/geometries';
+import { shapeProjection } from '@/utils/geometries';
 
 const MAX = 1000;
 
@@ -132,40 +132,40 @@ function drawShapes(shapes: ShapeProjection[]) {
         ctx.strokeStyle = shape.stroke;
 
         switch (shape.type) {
-        case 'text': {
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            shape.text.forEach((charPoint) => {
-                charPoint.forEach((point, index) => {
+            case 'text': {
+                ctx.lineWidth = 0.8;
+                ctx.beginPath();
+                shape.text.forEach((charPoint) => {
+                    charPoint.forEach((point, index) => {
+                        if (index) {
+                            ctx.lineTo(x(point[0]), y(point[1]));
+                        } else {
+                            ctx.moveTo(x(point[0]), y(point[1]));
+                        }
+                    });
+                });
+                ctx.stroke();
+                break;
+            }
+            case 'rect': {
+                ctx.beginPath();
+                shape.points.forEach((point, index) => {
                     if (index) {
                         ctx.lineTo(x(point[0]), y(point[1]));
                     } else {
                         ctx.moveTo(x(point[0]), y(point[1]));
                     }
                 });
-            });
-            ctx.stroke();
-            break;
-        }
-        case 'rect': {
-            ctx.beginPath();
-            shape.points.forEach((point, index) => {
-                if (index) {
-                    ctx.lineTo(x(point[0]), y(point[1]));
-                } else {
-                    ctx.moveTo(x(point[0]), y(point[1]));
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                if (shape.adds) {
+                    drawShapes(shape.adds);
                 }
-            });
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
 
-            if (shape.adds) {
-                drawShapes(shape.adds);
+                break;
             }
-
-            break;
-        }
         }
         ctx.restore();
     });

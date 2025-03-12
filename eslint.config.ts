@@ -29,7 +29,7 @@ export default defineConfigWithVueTs(
     },
     {
         rules: {
-            'indent': ['error', 4],
+            'indent': ['error', 4, { 'SwitchCase': 1 }],
             'semi': ['error', 'always'],
             'quotes': ['error', 'single'],
             'multiline-comment-style': ['error', 'starred-block'],
