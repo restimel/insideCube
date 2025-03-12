@@ -55,7 +55,7 @@
                 @click="selectTool(tool.id)"
             >
                 <span class="tool-icon">{{ tool.icon }}</span>
-                <span class="tool-name">{{ tool.name }}</span>
+                <span class="tool-name">{{ t(tool.name) }}</span>
             </button>
         </div>
     </div>
@@ -65,6 +65,7 @@
 import { computed, ref, watch } from 'vue';
 import { useCubeStore } from '@/stores/cubeStore';
 import { useI18n } from 'vue-i18n';
+import { editingTools } from '@/utils/tools';
 
 const { t } = useI18n();
 
@@ -110,13 +111,15 @@ const resetCube = () => {
 
 /* Editing tools */
 const selectedTool = computed(() => cubeStore.tool);
-const editingTools = [
-    { id: 'hole', name: 'Hole', icon: '⬤' },
-    { id: 'door', name: 'Door', icon: '⊔' },
-    { id: 'bridge', name: 'Bridge', icon: '≡' },
-    { id: 'stairs', name: 'Stairs', icon: '≣' },
-    { id: 'delete', name: 'Delete', icon: '✕' },
-];
+/*
+ * const editingTools = [
+ *     { id: 'hole', name: 'Hole', icon: '⬤' },
+ *     { id: 'door', name: 'Door', icon: '⊔' },
+ *     { id: 'bridge', name: 'Bridge', icon: '≡' },
+ *     { id: 'stairs', name: 'Stairs', icon: '≣' },
+ *     { id: 'delete', name: 'Delete', icon: '✕' },
+ * ];
+ */
 
 function selectTool(toolId: string) {
     cubeStore.tool = toolId;

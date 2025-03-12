@@ -1,8 +1,17 @@
 import { defineStore } from 'pinia';
+import {
+    copyCube,
+    createNewCube,
+    toCompleteCube,
+    toSimplifiedCube,
+} from '@/utils/cubeOperations';
+
 import type {
     Cube,
     CubeHistory,
     CubeName,
+    Dimensions,
+    Tools,
 } from '@/types/Cube';
 
 type CubeState = {
@@ -10,43 +19,19 @@ type CubeState = {
     activeCube: Cube | null;
     history: CubeHistory[];
     historyIndex: number;
-    tool: string;
+    tool: Tools;
+    dimensions: Dimensions;
 };
-
-/**
- * Creates a deep copy of a given Cube object.
- *
- * @param cube - The Cube object to be copied.
- * @returns A new Cube object that is a deep copy of the input cube.
- */
-function copyCube(cube: Cube): Cube {
-    return {
-        name: cube.name,
-        color: cube.color,
-        levels: cube.levels.map((level) => ({
-            name: level.name,
-            cells: level.cells.map((row) => [...row]),
-        })),
-    };
-}
-
-/**
- * Creates a new Cube object with default values.
- *
- * @returns A new Cube object with default name, color, and empty levels.
- */
-function createNewCube(): Cube {
-    return {
-        name: '',
-        color: '#000000',
-        levels: [],
-    };
-}
 
 export const useCubeStore = defineStore('cube', {
     state: (): CubeState => ({
         cubes: new Map(),
         activeCube: null,
+        dimensions: {
+            levels: 7,
+            rows: 6,
+            cells: 6,
+        },
         history: [],
         historyIndex: -1,
         tool: 'hole',
@@ -116,7 +101,7 @@ export const useCubeStore = defineStore('cube', {
         },
 
         createNewCube() {
-            this.activeCube = createNewCube();
+            this.activeCube = createNewCube(this.dimensions);
         },
 
         deleteCube(cube: Cube): boolean {
@@ -128,7 +113,7 @@ export const useCubeStore = defineStore('cube', {
         },
 
         selectCube(cube: Cube | CubeName) {
-            let activeCube = cube;
+            let activeCube: Cube;
 
             if (typeof cube === 'string') {
                 const storeCube = this.getCubeByName(cube);
@@ -138,9 +123,29 @@ export const useCubeStore = defineStore('cube', {
                 }
 
                 activeCube = storeCube;
+            } else {
+                activeCube = cube;
             }
 
-            this.activeCube = activeCube as Cube;
+            if (!activeCube) {
+                this.createNewCube();
+                return;
+            }
+
+            this.activeCube = copyCube(activeCube);
+            this.updateDimensions();
+        },
+
+        updateDimensions() {
+            const activeCube = this.activeCube;
+
+            if (activeCube) {
+                this.dimensions = {
+                    levels: activeCube.levels.length,
+                    rows: activeCube.levels[0].cells.length,
+                    cells: activeCube.levels[0].cells[0].length,
+                };
+            }
         },
 
         export(selections: CubeName[] = []): string {
@@ -150,7 +155,9 @@ export const useCubeStore = defineStore('cube', {
                 list = list.filter((cube) => selections.includes(cube.name));
             }
 
-            return JSON.stringify(list);
+            const simplifiedList = list.map(toSimplifiedCube);
+
+            return JSON.stringify(simplifiedList);
         },
 
         import(data: string | null, replace = false): ActionResult {
@@ -161,7 +168,8 @@ export const useCubeStore = defineStore('cube', {
                 try {
                     const cubes = JSON.parse(data);
 
-                    for (const cube of cubes) {
+                    for (const importedCube of cubes) {
+                        const cube = toCompleteCube(importedCube);
 
                         if (this.cubes.has(cube.name)) {
                             if (replace) {
@@ -252,6 +260,7 @@ export const useCubeStore = defineStore('cube', {
             if (index >= 0 && index < this.history.length) {
                 this.historyIndex = index;
                 this.activeCube = copyCube(this.history[this.historyIndex].cube);
+                this.updateDimensions();
             }
         },
 
@@ -263,6 +272,7 @@ export const useCubeStore = defineStore('cube', {
             if (index >= 0 && index < this.history.length) {
                 this.historyIndex = index;
                 this.activeCube = copyCube(this.history[this.historyIndex].cube);
+                this.updateDimensions();
             }
         },
     },

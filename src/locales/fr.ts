@@ -27,6 +27,7 @@ export default {
         export: 'Exporter des Cubes',
         exportJson: 'Le JSON exporté apparaitra ici...',
         import: 'Importer des Cubes',
+        levelName: 'Nom du niveau',
         levels: 'Aucun niveau | 1 niveau | {count} niveaux',
         noCubes: 'Aucun cube disponible',
         noSelection: 'Aucun cube sélectionné',
@@ -52,10 +53,13 @@ export default {
         placeholderName: 'Entrez un nom',
     },
     history: {
+        levelName: 'Nom du niveau mis à jour',
         loadCube: 'Cube "{name}" chargé',
         reset: 'Réinitialisation du cube "{name}"',
         saveCube: 'Cube "{name}" sauvegardé',
-        updateCube: 'Propriété {property} mise à jour',
+        toggleCell: 'Cellule modifiée ({tool})',
+        toggleWall: 'Mur modifié',
+        updateCube: 'Propriétée {property} mise à jour',
     },
     messages: {
         copiedToClipboard: 'Copié dans le presse-papiers !',
@@ -68,5 +72,9 @@ export default {
         nothingToCopy: 'Rien à copier',
         selectAtLeastOneCube: 'Veuillez sélectionner au moins un cube',
         skippingCubes: 'Les cubes {details} ont été ignorés',
+    },
+    tools: {
+        delete: 'Effacer',
+        hole: 'Trou',
     },
 };
