@@ -47,17 +47,7 @@
     <!-- Editing Tools -->
     <div class="config-section">
         <h3>{{ t('manage.editingTools') }}</h3>
-        <div class="tools-grid">
-            <button v-for="tool in editingTools"
-                :key="tool.id"
-                class="tool-btn"
-                :class="{ active: selectedTool === tool.id }"
-                @click="selectTool(tool.id)"
-            >
-                <span class="tool-icon">{{ tool.icon }}</span>
-                <span class="tool-name">{{ t(tool.name) }}</span>
-            </button>
-        </div>
+        <CubeTools />
     </div>
 </template>
 
@@ -65,11 +55,9 @@
 import { computed, ref, watch } from 'vue';
 import { useCubeStore } from '@/stores/cubeStore';
 import { useI18n } from 'vue-i18n';
-import { editingTools } from '@/utils/tools';
+import CubeTools from '@/components/manage/cubeTools.vue';
 
 const { t } = useI18n();
-
-/* Initialize the cube store */
 const cubeStore = useCubeStore();
 
 const activeCube = computed(() => cubeStore.activeCube);
@@ -105,25 +93,6 @@ const resetCube = () => {
     cubeStore.createNewCube();
     cubeStore.addToHistory(t('history.reset', {name: cubeName}));
 };
-
-/* }}} */
-/* {{{ tools */
-
-/* Editing tools */
-const selectedTool = computed(() => cubeStore.tool);
-/*
- * const editingTools = [
- *     { id: 'hole', name: 'Hole', icon: '⬤' },
- *     { id: 'door', name: 'Door', icon: '⊔' },
- *     { id: 'bridge', name: 'Bridge', icon: '≡' },
- *     { id: 'stairs', name: 'Stairs', icon: '≣' },
- *     { id: 'delete', name: 'Delete', icon: '✕' },
- * ];
- */
-
-function selectTool(toolId: string) {
-    cubeStore.tool = toolId;
-}
 
 /* }}} */
 
@@ -192,48 +161,5 @@ function selectTool(toolId: string) {
 }
 
 /* }}} */
-/* {{{ Editing tools */
 
-.tools-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-xs);
-}
-
-@media (max-width: 992px) {
-    .tools-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-.tool-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-xs);
-    border: var(--field-border);
-    border-radius: var(--border-radius-sm);
-    background-color: var(--color-background-soft);
-    color: var(--color-text);
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.tool-btn.active {
-    background-color: var(--color-primary);
-    color: var(--color-text-primary);
-    border-color: var(--color-secondary);
-}
-
-.tool-icon {
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--spacing-xs);
-}
-
-.tool-name {
-    font-size: var(--font-size-sm);
-}
-
-/* }}} */
 </style>

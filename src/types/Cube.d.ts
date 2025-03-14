@@ -96,4 +96,7 @@ export type AllCubes = SimplifiedCube | Cube | CompleteCube;
 export type Tools =
     | 'hole'
     | 'stairs'
+    | 'start'
+    | 'finish'
+    | 'pin'
     | 'delete';

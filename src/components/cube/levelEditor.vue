@@ -17,11 +17,15 @@
             :height="200"
             :viewBox="`-6 -6 ${15 * colMax + 6} ${15 * rowMax + 6}`"
         >
-            <symbol id="hole" viewBox="0 0 11 11">
-                <circle cx="5" cy="5" r="4"
-                    class="hole"
-                />
-            </symbol>
+            <defs>
+                <symbol id="hole" viewBox="0 0 11 11">
+                    <circle cx="5" cy="5" r="4"
+                        class="hole"
+                    />
+                </symbol>
+                <SymbolStartFlag />
+                <SymbolEndFlag />
+            </defs>
 
             <g v-for="(row, rowIndex) in level.cells"
                 :key="rowIndex"
@@ -41,6 +45,20 @@
                         />
                         <use v-if="!!cell.b"
                             href="#hole"
+                            :x="cellIndex * 15"
+                            :y="rowIndex * 15"
+                            :width="10"
+                            :height="10"
+                        />
+                        <use v-if="isStart(rowIndex, cellIndex)"
+                            href="#startFlag"
+                            :x="cellIndex * 15"
+                            :y="rowIndex * 15"
+                            :width="10"
+                            :height="10"
+                        />
+                        <use v-if="isEnd(rowIndex, cellIndex)"
+                            href="#endFlag"
                             :x="cellIndex * 15"
                             :y="rowIndex * 15"
                             :width="10"
@@ -92,6 +110,8 @@ import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCubeStore } from '@/stores/cubeStore';
 import type { Cell } from '@/types/Cube';
+import SymbolStartFlag from '@/components/icons/svg/symbolStartFlag.vue';
+import SymbolEndFlag from '@/components/icons/svg/symbolEndFlag.vue';
 
 const { t } = useI18n();
 const cubeStore = useCubeStore();
@@ -105,6 +125,7 @@ const props = defineProps<Props>();
 const activeCube = computed(() => {
     return cubeStore.activeCube;
 });
+
 const level = computed(() => {
     return activeCube.value?.levels[props.index];
 });
@@ -138,6 +159,20 @@ function activateCell(row: number, col: number) {
         case 'hole':
             cell.b = !cell.b;
             break;
+        case 'start':
+            activeCube.value!.start = {
+                x: col,
+                y: row,
+                z: props.index,
+            };
+            break;
+        case 'finish':
+            activeCube.value!.end = {
+                x: col,
+                y: row,
+                z: props.index,
+            };
+            break;
     }
 
     cubeStore.addToHistory(t('history.toggleCell', { row, col, tool, index: props.index + 1 }));
@@ -162,6 +197,26 @@ function displayCorner(cell: Cell, row: number, col: number): boolean {
 
     return !cell.r || !cell.d || !levelValue.cells[row + 1][col].r || !levelValue.cells[row][col + 1].d;
 }
+
+function isStart(row: number, col: number): boolean {
+    const start = activeCube.value!.start;
+
+    return (
+        start.z === props.index &&
+        start.x === col &&
+        start.y === row
+    );
+}
+
+function isEnd(row: number, col: number): boolean {
+    const end = activeCube.value!.end;
+
+    return (
+        end.z === props.index &&
+        end.x === col &&
+        end.y === row
+    );
+}
 </script>
 
 <style scoped>
@@ -172,6 +227,8 @@ function displayCorner(cell: Cell, row: number, col: number): boolean {
 
     --cube-color1: var(--cube-color);
     --cube-color2: var(--cube-color-alternate);
+
+    --icon-color: var(--cube-color2);
 }
 .level-cell {
     fill: var(--cube-color1);

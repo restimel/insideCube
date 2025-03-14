@@ -75,6 +75,8 @@ export default {
     },
     tools: {
         delete: 'Effacer',
+        finish: 'Fin',
         hole: 'Trou',
+        start: 'Début',
     },
 };

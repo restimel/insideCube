@@ -75,6 +75,8 @@ export default {
     },
     tools: {
         delete: 'Delete',
+        finish: 'Finish',
         hole: 'Hole',
+        start: 'Start',
     },
 };

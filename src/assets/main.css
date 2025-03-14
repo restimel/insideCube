@@ -29,14 +29,16 @@ button.primary-button {
 }
 
 button {
-    --button-bg-color: var(--color-secondary);
-    --button-color: var(--color-text-secondary);
+    --button-bg-color: var(--color-background-soft);
+    --button-color:  var(--color-text);
+    /* --button-bg-color: var(--color-secondary);
+    --button-color: var(--color-text-secondary); */
     --button-bg-color-hover: hsl(from var(--button-bg-color) h s calc(l - 15));
     --button-bg-color-active: hsl(from var(--button-bg-color) h s calc(l + 15));
 
     background-color: var(--button-bg-color);
     color: var(--button-color);
-    padding: 8px 16px;
+    padding: var(--field-padding) calc(2 * var(--field-padding));
     border: none;
     border-radius: var(--border-radius-sm);
     cursor: pointer;
