@@ -10,3 +10,6 @@
         <use href="#endFlag" width="20" height="20" />
     </svg>
 </template>
+<script lang="ts" setup>
+import SymbolEndFlag from '@/components/icons/svg/symbolEndFlag.vue';
+</script>
