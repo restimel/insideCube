@@ -1,7 +1,9 @@
 import type {
     AllCubes,
+    Cell,
     Cube,
     Dimensions,
+    Level,
     SimplifiedCell,
     SimplifiedCube,
     SimplifiedLevel,
@@ -32,6 +34,22 @@ export function copyCube(cube: Cube): Cube {
     };
 }
 
+export function createNewCell(): Cell {
+    return {};
+}
+
+export function createNewRow(dimensions: Dimensions): Cell[] {
+    return Array.from({ length: dimensions.cells }, createNewCell);
+}
+
+export function createNewLevel(dimensions: Dimensions, name: string, lid: boolean = false): Level {
+    return {
+        name: name,
+        lid: lid,
+        cells: Array.from({ length: dimensions.rows }, () => createNewRow(dimensions)),
+    };
+}
+
 /**
  * Creates a new Cube object with default values.
  *
@@ -47,15 +65,9 @@ export function createNewCube(dimensions: Dimensions): Cube {
             y: dimensions.rows - 2,
             z: dimensions.levels - 1,
         },
-        levels: Array.from({ length: dimensions.levels }, (_, level) => ({
-            name: `Level ${level + 1}`,
-            lid: level === dimensions.levels - 1,
-            cells: Array.from({ length: dimensions.rows }, () =>
-                Array.from({ length: dimensions.cells }, () =>
-                    ({})
-                )
-            ),
-        })),
+        levels: Array.from({ length: dimensions.levels }, (_, level) => {
+            return createNewLevel(dimensions, `Level ${level + 1}`, level === dimensions.levels - 1);
+        }),
     };
 }
 

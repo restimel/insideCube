@@ -42,6 +42,7 @@
 
     --color-background: var(--vt-c-white);
     --color-background-soft: var(--vt-c-white-soft);
+    --color-background-light: var(--vt-c-white-light);
     --color-background-mute: var(--vt-c-white-mute);
 
     --color-border: var(--vt-c-divider-light-2);

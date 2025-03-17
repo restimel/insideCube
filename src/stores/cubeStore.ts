@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia';
 import {
     copyCube,
+    createNewCell,
     createNewCube,
+    createNewLevel,
+    createNewRow,
     toCompleteCube,
     toSimplifiedCube,
 } from '@/utils/cubeOperations';
@@ -134,6 +137,58 @@ export const useCubeStore = defineStore('cube', {
 
             this.activeCube = copyCube(activeCube);
             this.updateDimensions();
+        },
+
+        updateCubeSize(dimension: keyof Dimensions, value: number) {
+            const oldValue = this.dimensions[dimension];
+            const activeCube = this.activeCube;
+
+            if (oldValue === value || !activeCube) {
+                return;
+            }
+
+            this.dimensions[dimension] = value;
+            const isGreater = oldValue < value;
+            const dimensions = this.dimensions;
+
+            switch (dimension) {
+                case 'levels':
+                    if (isGreater) {
+                        for (let idx = oldValue; idx < value; idx++) {
+                            activeCube.levels[idx] = createNewLevel(dimensions, `Level ${idx + 1}`);
+                        }
+                    } else {
+                        activeCube.levels = activeCube.levels.slice(0, value);
+                    }
+                    this.addToHistory('history.updateCubeDimension');
+                    break;
+                case 'rows':
+                    activeCube.levels.forEach((level) => {
+                        if (isGreater) {
+                            for (let idx = oldValue; idx < value; idx++) {
+                                level.cells.push(createNewRow(dimensions));
+                            }
+                        } else {
+                            level.cells = level.cells.slice(0, value);
+                        }
+                    });
+                    this.addToHistory('history.updateLevelDimension');
+                    break;
+                case 'cells':
+                    activeCube.levels.forEach((level) => {
+                        level.cells.forEach((row) => {
+                            if (isGreater) {
+                                for (let idx = oldValue; idx < value; idx++) {
+                                    row.push(createNewCell());
+                                }
+                            } else {
+                                row.splice(value, Infinity);
+                            }
+                        });
+                    });
+                    this.addToHistory('history.updateLevelDimension');
+                    break;
+            }
         },
 
         updateDimensions() {

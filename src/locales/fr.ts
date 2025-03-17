@@ -17,6 +17,7 @@ export default {
         editingTools: 'Outils d\'édition',
         history: 'Historique',
         information: 'Information',
+        moreConfiguration: 'Plus de configurations',
         preview: 'Prévisualisation',
         properties: 'Propriétés du cube',
         statistics: 'Statistiques',
@@ -49,6 +50,9 @@ export default {
     fields: {
         color: 'Couleur :',
         complexity: 'Complexité :',
+        cellSize: 'Nombre de colonnes :',
+        levelSize: 'Nombre de niveaux :',
+        rowSize: 'Nombre de lignes :',
         name: 'Nom :',
         placeholderName: 'Entrez un nom',
     },
@@ -60,6 +64,8 @@ export default {
         toggleCell: 'Cellule modifiée ({tool})',
         toggleWall: 'Mur modifié',
         updateCube: 'Propriétée {property} mise à jour',
+        updateCubeDimension: 'Dimension du cube mise à jour',
+        updateLevelDimension: 'Dimension des niveaux mise à jour',
     },
     messages: {
         copiedToClipboard: 'Copié dans le presse-papiers !',

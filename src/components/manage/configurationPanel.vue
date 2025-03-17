@@ -1,4 +1,23 @@
 <template>
+    <!-- Editing Tools -->
+    <div class="config-section">
+        <h3>{{ t('manage.editingTools') }}</h3>
+        <CubeTools />
+    </div>
+
+    <!-- Cube Actions -->
+    <div class="config-section">
+        <h3>{{ t('manage.actions') }}</h3>
+        <div class="action-buttons">
+            <button @click="loadCube" class="action-btn load-btn">
+                {{ t('actions.load') }}
+            </button>
+            <button @click="resetCube" class="action-btn reset-btn">
+                {{ t('actions.reset') }}
+            </button>
+        </div>
+    </div>
+
     <!-- Cube Properties -->
     <div class="config-section">
         <h3>{{ t('manage.properties') }}</h3>
@@ -29,25 +48,43 @@
                 </label>
             </div>
         </div>
-    </div>
-
-    <!-- Cube Actions -->
-    <div class="config-section">
-        <h3>{{ t('manage.actions') }}</h3>
-        <div class="action-buttons">
-            <button @click="loadCube" class="action-btn load-btn">
-                {{ t('actions.load') }}
-            </button>
-            <button @click="resetCube" class="action-btn reset-btn">
-                {{ t('actions.reset') }}
-            </button>
-        </div>
-    </div>
-
-    <!-- Editing Tools -->
-    <div class="config-section">
-        <h3>{{ t('manage.editingTools') }}</h3>
-        <CubeTools />
+        <ToggleField
+            :label="t('manage.moreConfiguration')"
+            class="additionalSettings"
+            :open="openMoreSetting"
+            @toggle="toggleSettings"
+        >
+            <div class="form-group">
+                <label for="cubeLevelSize">{{ t('fields.levelSize') }}</label>
+                <input
+                    id="cubeLevelSize"
+                    v-model="cubeLevelSize"
+                    type="number"
+                    min="1"
+                    @change="updateCubeSize('levels', cubeLevelSize)"
+                >
+            </div>
+            <div class="form-group">
+                <label for="cubeRowSize">{{ t('fields.rowSize') }}</label>
+                <input
+                    id="cubeRowSize"
+                    v-model="cubeRowSize"
+                    type="number"
+                    min="1"
+                    @change="updateCubeSize('rows', cubeRowSize)"
+                >
+            </div>
+            <div class="form-group">
+                <label for="cubeCellSize">{{ t('fields.cellSize') }}</label>
+                <input
+                    id="cubeCellSize"
+                    v-model="cubeCellSize"
+                    type="number"
+                    min="1"
+                    @change="updateCubeSize('cells', cubeCellSize)"
+                >
+            </div>
+        </ToggleField>
     </div>
 </template>
 
@@ -56,6 +93,8 @@ import { computed, ref, watch } from 'vue';
 import { useCubeStore } from '@/stores/cubeStore';
 import { useI18n } from 'vue-i18n';
 import CubeTools from '@/components/manage/cubeTools.vue';
+import ToggleField from '@/components/toggleField.vue';
+import type { Dimensions } from '@/types/Cube';
 
 const { t } = useI18n();
 const cubeStore = useCubeStore();
@@ -63,6 +102,10 @@ const cubeStore = useCubeStore();
 const activeCube = computed(() => cubeStore.activeCube);
 const cubeName = ref(activeCube.value?.name || '');
 const cubeColor = ref(activeCube.value?.color || '#000000');
+const cubeLevelSize = ref(cubeStore.dimensions.levels);
+const cubeRowSize = ref(cubeStore.dimensions.rows);
+const cubeCellSize = ref(cubeStore.dimensions.cells);
+const openMoreSetting = ref(false);
 
 /* Watch for active cube changes */
 watch(() => activeCube.value, (newCube) => {
@@ -72,6 +115,21 @@ watch(() => activeCube.value, (newCube) => {
     }
 }, { immediate: true });
 
+watch(() => cubeStore.dimensions, (newDimensions) => {
+    if (newDimensions) {
+        cubeLevelSize.value = newDimensions.levels;
+        cubeRowSize.value = newDimensions.rows;
+        cubeCellSize.value = newDimensions.cells;
+    }
+}, { immediate: true });
+
+/* {{{ properties */
+
+function toggleSettings(status: boolean) {
+    openMoreSetting.value = status;
+}
+
+/* }}} */
 /* {{{ actions */
 
 const updateCubeProperty = (property: 'name' | 'color', value: string) => {
@@ -82,6 +140,10 @@ const updateCubeProperty = (property: 'name' | 'color', value: string) => {
     cubeStore.activeCube![property] = value;
     cubeStore.addToHistory(t('history.updateCube', { property }));
 };
+
+function updateCubeSize(dimension: keyof Dimensions, value: number) {
+    cubeStore.updateCubeSize(dimension, value);
+}
 
 const loadCube = () => {
     cubeStore.addToHistory(t('history.loadCube', {name: cubeStore.activeCube?.name}));
@@ -110,6 +172,11 @@ const resetCube = () => {
     margin-bottom: var(--spacing-sm);
     font-size: var(--font-size-md);
     color: var(--color-heading);
+}
+
+.additionalSettings {
+    margin-left: calc(var(--section-padding) * -1);
+    margin-right: calc(var(--section-padding) * -1);
 }
 
 /* {{{ Color picker */
