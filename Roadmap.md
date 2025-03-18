@@ -39,6 +39,7 @@ Objective: have same features as InsideWeCube
         * [ ] Worker to build these statistics
         * [ ] Highlight available cells
     * [ ] Map preview
+        * [x] basis
         * [ ] change orientation
         * [ ] print mode
 * [ ] Lost

@@ -269,7 +269,7 @@ function isEnd(row: number, col: number): boolean {
 
 .border {
     fill: none;
-    stroke: var(--cube-color-alternate);
+    stroke: var(--cube-color2);
     stroke-width: 6;
 }
 </style>

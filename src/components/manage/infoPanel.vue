@@ -26,8 +26,7 @@
     <div class="info-section">
         <h3>{{ t('manage.preview') }}</h3>
         <div class="preview-container">
-            <!-- Placeholder for preview component -->
-            <CubeLogo :cube="activeCube" />
+            <CubePreview />
         </div>
     </div>
 
@@ -69,15 +68,12 @@
 <script setup lang="ts">
 import { computed, reactive, type Ref } from 'vue';
 import { useCubeStore } from '@/stores/cubeStore';
-import CubeLogo from '@/components/cubeLogo.vue';
+import CubePreview from '@/components/cube/cubePreview.vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-/* Initialize the cube store */
 const cubeStore = useCubeStore();
-
-const activeCube = computed(() => cubeStore.activeCube);
 
 /* {{{ history */
 
@@ -182,7 +178,6 @@ const stats = reactive<Stats>({
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--spacing-sm);
 }
 
 /* }}} */
