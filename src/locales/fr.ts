@@ -29,7 +29,7 @@ export default {
         exportJson: 'Le JSON exporté apparaitra ici...',
         import: 'Importer des Cubes',
         levelName: 'Nom du niveau',
-        levels: 'Aucun niveau | 1 niveau | {count} niveaux',
+        levels: 'Aucun niveau | 1 niveau ({sizeCol} × {sizeRow}) | {count} niveaux ({sizeCol} × {sizeRow})',
         noCubes: 'Aucun cube disponible',
         noSelection: 'Aucun cube sélectionné',
         pasteJSON: 'Copiez votre JSON décrivant vos cubes ici...',
@@ -38,6 +38,7 @@ export default {
         },
     },
     actions: {
+        cancel: 'Annuler',
         copy: 'Copier',
         import: 'Importer',
         load: 'Charger',

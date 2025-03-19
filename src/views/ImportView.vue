@@ -1,37 +1,5 @@
 <template>
     <div class="import-export-container">
-        <!-- Active cube selection -->
-        <BoxSection :title="t('cube.active')">
-            <div v-if="cubes.size > 0"
-                class="active-cube"
-            >
-                <CubeLogo :cube="activeCube" />
-                <div class="cube-info">
-                    <div class="cube-name">{{ activeCube?.name || t('cube.noSelection') }}</div>
-                    <div class="cube-details" v-if="activeCube">
-                        {{ t('cube.levels', activeCube.levels.length) }}
-                    </div>
-                </div>
-            </div>
-            <select
-                v-model="selectedCubeName"
-                class="cube-select"
-                @change="handleCubeChange"
-            >
-                <option v-for="[cubeName] in cubes"
-                    :key="cubeName"
-                    :value="cubeName"
-                >
-                    {{ cubeName }}
-                </option>
-            </select>
-            <div v-if="cubes.size === 0"
-                class="no-cubes"
-            >
-                {{ t('cube.noCubes') }}
-            </div>
-        </BoxSection>
-
         <!-- Import cubes -->
         <BoxSection :title="t('cube.import')">
             <textarea
@@ -128,29 +96,14 @@ import type { CubeName } from '@/types/Cube';
 import BoxSection from '@/components/scaffold/panelSection.vue';
 import { useI18n } from 'vue-i18n';
 import MessageDisplay from '@/components/MessageDisplay.vue';
-import CubeLogo from '@/components/cubeLogo.vue';
 
 const { t } = useI18n();
 
-/* Initialize the cube store */
 const cubeStore = useCubeStore();
 
 /* References to store values */
 const cubes = computed(() => cubeStore.cubes);
-const activeCube = computed(() => cubeStore.activeCube);
 
-/* {{{ Selected cube handling */
-
-const selectedCubeName = ref<CubeName | null>(activeCube.value?.name || null);
-
-/* Handle cube selection change */
-const handleCubeChange = () => {
-    if (selectedCubeName.value) {
-        cubeStore.selectCube(selectedCubeName.value);
-    }
-};
-
-/* }}} */
 /* {{{ Import functionality */
 
 const importJson = ref('');
@@ -276,35 +229,6 @@ const copyToClipboard = () => {
     padding: var(--section-padding);
 }
 
-/* {{{ cube selection */
-
-.active-cube {
-    display: flex;
-    align-items: center;
-    margin-block-end: var(--spacing-xs);
-}
-
-.cube-info {
-    flex: 1;
-}
-
-.cube-name {
-    font-weight: bold;
-}
-
-.cube-details {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-information);
-}
-
-.cube-select {
-    width: 100%;
-    padding: var(--field-padding);
-    border-radius: var(--border-radius-sm);
-    border: var(--field-border);
-}
-
-/* }}} */
 /* {{{ import/export */
 
 .json-textarea {
@@ -326,11 +250,10 @@ const copyToClipboard = () => {
     margin-right: var(--spacing-xs);
 }
 
-/* TODO */
 .message {
-    font-size: 0.9em;
-    padding: 4px 8px;
-    border-radius: 4px;
+    font-size: var(--font-size-sm);
+    padding: var(--field-padding-sm) var(--field-padding);
+    border-radius: var(--border-radius-sm);
 }
 
 .cube-selection {

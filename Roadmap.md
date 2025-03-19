@@ -9,14 +9,16 @@ Objective: have same features as InsideWeCube
     * [ ] filter on own cubes only
     * [ ] manage the collection (cube deletion)
     * [ ] save active cube
-* [ ] Import/Export
+    * [ ] add Default brand cubes
+        * [ ] add brand newer cubes
+* [x] Import/Export
     * [x] can import InsideWeCube json format
     * [x] can import InsideCube json format
     * [x] can export InsideCube json format
     * [x] can select which cube to export
-    * [ ] remove the cube selection (no more needed)
+    * [x] remove the cube selection (no more needed)
 * [ ] Manage
-    * [ ] load cube
+    * [x] load cube
     * [x] reset cube
     * [x] change cube name
     * [x] change cube color
@@ -59,11 +61,15 @@ Objective: have same features as InsideWeCube
 
 ## Expected improvements
 
+* [ ] Global
+    * [ ] modal: support key board (escape/enter)
+    * [ ] improve mobile support / design
+    * [ ] improve large screen
 * [ ] Import/Export
     * Improve format compression (code for cells (single letter))
 * [ ] Manage
     * [ ] History
-        * [ ] handle keyboard
+        * [ ] handle keyboard (ctrl+z / ctrl + y)
 * [ ] Lost
     * auto detect with sound / mobile orientation
 * [ ] Play

@@ -11,9 +11,11 @@
 import { computed } from 'vue';
 import type { Cube } from '@/types/Cube';
 
-const props = defineProps<{
-    cube: Cube | null;
-}>();
+type Props = {
+    cube?: Cube | null;
+};
+
+const props = defineProps<Props>();
 
 const cube = computed(() => props.cube);
 const letter = computed(() => {

@@ -9,13 +9,34 @@
     <div class="config-section">
         <h3>{{ t('manage.actions') }}</h3>
         <div class="action-buttons">
-            <button @click="loadCube" class="action-btn load-btn">
+            <button @click="openLoad = true" class="action-btn load-btn">
                 {{ t('actions.load') }}
             </button>
             <button @click="resetCube" class="action-btn reset-btn">
                 {{ t('actions.reset') }}
             </button>
         </div>
+
+        <DialogModal
+            :open="openLoad"
+            @close="openLoad = false"
+            @maskClick="openLoad = false"
+        >
+            <CubeSelect
+                class="select-cube-loader"
+                :value="selectedCubeName"
+                @change="changeCubeSelection"
+            />
+            <footer class="modal-footer">
+                <button @click="loadCube" class="primary-button">
+                    {{ t('actions.load') }}
+                </button>
+                <button @click="openLoad = false">
+                    {{ t('actions.cancel') }}
+                </button>
+            </footer>
+        </DialogModal>
+
     </div>
 
     <!-- Cube Properties -->
@@ -94,6 +115,8 @@ import { useCubeStore } from '@/stores/cubeStore';
 import { useI18n } from 'vue-i18n';
 import CubeTools from '@/components/manage/cubeTools.vue';
 import ToggleField from '@/components/toggleField.vue';
+import DialogModal from '@/components/dialogModal.vue';
+import CubeSelect from '@/components/cube/cubeSelect.vue';
 import type { Dimensions } from '@/types/Cube';
 
 const { t } = useI18n();
@@ -140,8 +163,20 @@ function updateCubeSize(dimension: keyof Dimensions, value: number) {
     cubeStore.updateCubeSize(dimension, value);
 }
 
-const loadCube = () => {
-    cubeStore.addToHistory('history.loadCube', {name: cubeStore.activeCube?.name});
+const openLoad = ref(false);
+const selectedCubeName = ref(activeCube.value?.name);
+
+function changeCubeSelection(value: string) {
+    selectedCubeName.value = value;
+}
+
+function loadCube() {
+    const cubeName = selectedCubeName.value;
+
+    if (cubeStore.selectCube(cubeName, true)) {
+        cubeStore.addToHistory('history.loadCube', {name: cubeName});
+        openLoad.value = false;
+    }
 };
 
 const resetCube = () => {
@@ -220,6 +255,24 @@ const resetCube = () => {
     .action-buttons {
         flex-direction: column;
     }
+}
+
+.select-cube-loader {
+    min-width: 500px;
+}
+
+@media (max-width: 550px) {
+    .select-cube-loader {
+        min-width: calc(100vw - 2 * var(--section-padding));
+    }
+}
+
+.modal-footer {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-xs);
+    justify-content: flex-end;
+    margin-top: var(--spacing-md);
 }
 
 /* }}} */

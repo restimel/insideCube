@@ -100,7 +100,7 @@ export const useCubeStore = defineStore('cube', {
         /* }}} */
         /* {{{ active cube */
 
-        selectCube(cube: Cube | CubeName = '', strictSelection = false) {
+        selectCube(cube: Cube | CubeName = '', strictSelection = false): boolean {
             let activeCube: Cube;
 
             if (typeof cube === 'string') {
@@ -108,13 +108,13 @@ export const useCubeStore = defineStore('cube', {
 
                 if (!storeCube) {
                     if (strictSelection) {
-                        return;
+                        return false;
                     }
 
                     const firstCube = this.cubes.values().next().value;
 
                     if (!firstCube) {
-                        return;
+                        return false;
                     }
 
                     storeCube = copyCube(firstCube);
@@ -122,16 +122,22 @@ export const useCubeStore = defineStore('cube', {
 
                 activeCube = storeCube;
             } else {
-                activeCube = cube;
+                activeCube = copyCube(cube);
             }
 
             if (!activeCube) {
-                this.createNewCube();
-                return;
+                if (!strictSelection) {
+                    this.createNewCube();
+                    return true;
+                }
+
+                return false;
             }
 
             this.activeCube = copyCube(activeCube);
             this.updateDimensions();
+
+            return true;
         },
 
         updateCubeProperty(property: 'name' | 'color', value: string) {

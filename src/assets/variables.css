@@ -62,12 +62,13 @@
     /* Gap & padding */
     --section-gap: 30px;
 
+    --field-padding-sm: 4px;
     --field-padding: 8px;
     --field-margin: 15px;
     --section-padding: 20px;
 
     /* Font sizes */
-    --font-size-reference: 15px; /* should not be used expect by base.css */
+    --font-size-reference: 15px; /* should not be used except by base.css */
     --font-size-sm: 0.875rem;
     --font-size-md: 1rem;
     --font-size-lg: 1.25rem;
@@ -80,7 +81,7 @@
 
     /* Shadows */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.2);
     --shadow-lg: 5px 10px 15px rgba(0, 0, 0, 0.5);
 
     /* Border radius */
