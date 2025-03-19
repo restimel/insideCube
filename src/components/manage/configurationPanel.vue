@@ -133,12 +133,7 @@ function toggleSettings(status: boolean) {
 /* {{{ actions */
 
 const updateCubeProperty = (property: 'name' | 'color', value: string) => {
-    if (!cubeStore.activeCube) {
-        cubeStore.createNewCube();
-    }
-
-    cubeStore.activeCube![property] = value;
-    cubeStore.addToHistory(t('history.updateCube', { property }));
+    cubeStore.updateCubeProperty(property, value);
 };
 
 function updateCubeSize(dimension: keyof Dimensions, value: number) {
@@ -146,14 +141,14 @@ function updateCubeSize(dimension: keyof Dimensions, value: number) {
 }
 
 const loadCube = () => {
-    cubeStore.addToHistory(t('history.loadCube', {name: cubeStore.activeCube?.name}));
+    cubeStore.addToHistory('history.loadCube', {name: cubeStore.activeCube?.name});
 };
 
 const resetCube = () => {
     const cubeName = cubeStore.activeCube?.name;
 
     cubeStore.createNewCube();
-    cubeStore.addToHistory(t('history.reset', {name: cubeName}));
+    cubeStore.addToHistory('history.reset', {name: cubeName});
 };
 
 /* }}} */

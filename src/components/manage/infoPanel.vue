@@ -60,7 +60,13 @@
                 @click="goto(history.length - index - 1)"
             >
                 <span class="history-time">{{ formatTime(action.timestamp) }}</span>
-                <span class="history-action">{{ action.description }}</span>
+                <span class="history-action">
+                    {{ t(action.description, action.details) }}
+                    <IconInformation v-if="action.notUndoable"
+                        :title="t('information.notUndoable')"
+                        class="inline-icon"
+                    />
+                </span>
             </div>
         </div>
     </div>
@@ -70,6 +76,7 @@ import { computed, reactive, type Ref } from 'vue';
 import { useCubeStore } from '@/stores/cubeStore';
 import CubePreview from '@/components/cube/cubePreview.vue';
 import { useI18n } from 'vue-i18n';
+import IconInformation from '@/components/icons/IconInformation.vue';
 
 const { t } = useI18n();
 

@@ -14,6 +14,7 @@ import type {
     CubeHistory,
     CubeName,
     Dimensions,
+    HistoryDetail,
     Tools,
 } from '@/types/Cube';
 
@@ -41,9 +42,6 @@ export const useCubeStore = defineStore('cube', {
     }),
 
     getters: {
-        // getCubes: (state) => state.cubes,
-
-
         /*
          * getSelectedCube: (state) => {
          *     return state.selectedCubeId !== null
@@ -62,6 +60,8 @@ export const useCubeStore = defineStore('cube', {
     },
 
     actions: {
+        /* {{{ cubes */
+
         getCubeByName(name: CubeName): Cube | undefined {
             return this.cubes.get(name);
         },
@@ -79,28 +79,10 @@ export const useCubeStore = defineStore('cube', {
                 this.cubes.delete(name);
             }
 
-            this.setDefaultCube(cube.name);
+            this.selectCube(cube.name);
             this.saveCubesToLocalStorage();
 
             return true;
-        },
-
-        setDefaultCube(cubeName?: CubeName) {
-            if (!this.activeCube) {
-                if (cubeName) {
-                    const cube = this.getCubeByName(cubeName);
-
-                    if (cube) {
-                        this.activeCube = copyCube(cube);
-                    }
-                } else {
-                    const firstCube = this.cubes.values().next().value;
-
-                    if (firstCube) {
-                        this.activeCube = copyCube(firstCube);
-                    }
-                }
-            }
         },
 
         createNewCube() {
@@ -110,19 +92,32 @@ export const useCubeStore = defineStore('cube', {
         deleteCube(cube: Cube): boolean {
             const result = this.cubes.delete(cube.name);
 
-            this.setDefaultCube();
+            this.selectCube();
             this.saveCubesToLocalStorage();
             return result;
         },
 
-        selectCube(cube: Cube | CubeName) {
+        /* }}} */
+        /* {{{ active cube */
+
+        selectCube(cube: Cube | CubeName = '', strictSelection = false) {
             let activeCube: Cube;
 
             if (typeof cube === 'string') {
-                const storeCube = this.getCubeByName(cube);
+                let storeCube = cube && this.getCubeByName(cube);
 
                 if (!storeCube) {
-                    return;
+                    if (strictSelection) {
+                        return;
+                    }
+
+                    const firstCube = this.cubes.values().next().value;
+
+                    if (!firstCube) {
+                        return;
+                    }
+
+                    storeCube = copyCube(firstCube);
                 }
 
                 activeCube = storeCube;
@@ -137,6 +132,15 @@ export const useCubeStore = defineStore('cube', {
 
             this.activeCube = copyCube(activeCube);
             this.updateDimensions();
+        },
+
+        updateCubeProperty(property: 'name' | 'color', value: string) {
+            if (!this.activeCube) {
+                this.createNewCube();
+            }
+
+            this.activeCube![property] = value;
+            this.addToHistory('history.updateCube', { property });
         },
 
         updateCubeSize(dimension: keyof Dimensions, value: number) {
@@ -160,7 +164,7 @@ export const useCubeStore = defineStore('cube', {
                     } else {
                         activeCube.levels = activeCube.levels.slice(0, value);
                     }
-                    this.addToHistory('history.updateCubeDimension');
+                    this.addToHistory('history.updateCubeDimension', { property: dimension });
                     break;
                 case 'rows':
                     activeCube.levels.forEach((level) => {
@@ -172,7 +176,7 @@ export const useCubeStore = defineStore('cube', {
                             level.cells = level.cells.slice(0, value);
                         }
                     });
-                    this.addToHistory('history.updateLevelDimension');
+                    this.addToHistory('history.updateLevelDimension', { property: dimension });
                     break;
                 case 'cells':
                     activeCube.levels.forEach((level) => {
@@ -186,7 +190,7 @@ export const useCubeStore = defineStore('cube', {
                             }
                         });
                     });
-                    this.addToHistory('history.updateLevelDimension');
+                    this.addToHistory('history.updateLevelDimension', { property: dimension });
                     break;
             }
         },
@@ -202,6 +206,73 @@ export const useCubeStore = defineStore('cube', {
                 };
             }
         },
+
+        /* }}} */
+        /* {{{ levels */
+
+        updateLevelName(levelIndex: number, name: string) {
+            const level = this.activeCube?.levels[levelIndex];
+
+            if (!level) {
+                return;
+            }
+
+            level.name = name;
+            this.addToHistory('history.levelName', { name: name, index: levelIndex + 1 });
+        },
+
+        /* }}} */
+        /* {{{ cells */
+
+        toggleWall(levelIdx: number, row: number, col: number, wall: 'd' | 'r') {
+            const cube = this.activeCube;
+            const level = cube?.levels[levelIdx];
+            const cell = level?.cells[row]?.[col];
+
+            if (!cube || !level || !cell) {
+                return;
+            }
+
+            cell[wall] = !cell[wall];
+            this.addToHistory('history.toggleWall', { row, col, index: levelIdx + 1 });
+        },
+
+        toolCell(levelIdx: number, row: number, col: number) {
+            const cube = this.activeCube;
+            const level = cube?.levels[levelIdx];
+            const cell = level?.cells[row]?.[col];
+
+            if (!cube || !level || !cell) {
+                return;
+            }
+
+            const tool = this.tool;
+
+            switch (tool) {
+                case 'hole':
+                    cell.b = !cell.b;
+                    break;
+                case 'start':
+                    cube.start = {
+                        x: col,
+                        y: row,
+                        z: levelIdx,
+                    };
+                    break;
+                case 'finish':
+                    cube.end = {
+                        x: col,
+                        y: row,
+                        z: levelIdx,
+                    };
+                    break;
+            }
+
+            this.addToHistory('history.toggleCell', { row, col, tool, index: levelIdx + 1 });
+        },
+
+        /* }}} */
+        /* {{{ import/export */
 
         export(selections: CubeName[] = []): string {
             let list = Array.from(this.cubes.values());
@@ -283,8 +354,9 @@ export const useCubeStore = defineStore('cube', {
             this.import(savedCubes);
         },
 
+        /* }}} */
         /* History */
-        addToHistory(description: string, notUndoable = false) {
+        addToHistory(description: string, details: HistoryDetail, notUndoable = false) {
             if (this.activeCube === null) {
                 return;
             }
@@ -300,6 +372,7 @@ export const useCubeStore = defineStore('cube', {
             this.history.push({
                 timestamp: new Date(),
                 description,
+                details,
                 cube: copyCube(this.activeCube),
                 notUndoable,
             });

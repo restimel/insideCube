@@ -139,57 +139,22 @@ watch(level, () => {
 });
 
 function updateLevelName() {
-    if (!level.value) {
-        return;
-    }
-
-    level.value.name = levelName.value;
-    cubeStore.addToHistory(t('history.levelName', { name: levelName.value, index: props.index + 1 }));
+    cubeStore.updateLevelName(props.index, levelName.value);
 }
 
 const rowMax = computed(() => cubeStore.dimensions.rows);
 const colMax = computed(() => cubeStore.dimensions.cells);
 
 function activateCell(row: number, col: number) {
-    const levelValue = level.value!;
-    const cell = levelValue.cells[row][col];
-    const tool = cubeStore.tool;
-
-    switch (tool) {
-        case 'hole':
-            cell.b = !cell.b;
-            break;
-        case 'start':
-            activeCube.value!.start = {
-                x: col,
-                y: row,
-                z: props.index,
-            };
-            break;
-        case 'finish':
-            activeCube.value!.end = {
-                x: col,
-                y: row,
-                z: props.index,
-            };
-            break;
-    }
-
-    cubeStore.addToHistory(t('history.toggleCell', { row, col, tool, index: props.index + 1 }));
+    cubeStore.toolCell(props.index, row, col);
 }
 
 function activateRightWall(row: number, col: number) {
-    const levelValue = level.value!;
-    const cell = levelValue.cells[row][col];
-    cell.r = !cell.r;
-    cubeStore.addToHistory(t('history.toggleWall', { row, col, index: props.index + 1 }));
+    cubeStore.toggleWall(props.index, row, col, 'r');
 }
 
 function activateDownWall(row: number, col: number) {
-    const levelValue = level.value!;
-    const cell = levelValue.cells[row][col];
-    cell.d = !cell.d;
-    cubeStore.addToHistory(t('history.toggleWall', { row, col, index: props.index + 1 }));
+    cubeStore.toggleWall(props.index, row, col, 'd');
 }
 
 function displayCorner(cell: Cell, row: number, col: number): boolean {

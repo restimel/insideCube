@@ -67,6 +67,9 @@ export default {
         updateCubeDimension: 'Updated cube size',
         updateLevelDimension: 'Updated level size',
     },
+    information: {
+        notUndoable: 'This action cannot be canceled. You can only return to the same state during edition.',
+    },
     messages: {
         copiedToClipboard: 'Copied to clipboard!',
         copyError: 'Error copying to clipboard',

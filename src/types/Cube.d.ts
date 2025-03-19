@@ -51,9 +51,12 @@ export type Dimensions = {
 export type CubeName = string;
 export type LevelName = string;
 
+export type HistoryDetail = Record<string, string | number | undefined>;
+
 export type CubeHistory = {
     timestamp: Date;
     description: string;
+    details: HistoryDetail;
     cube: Cube;
     notUndoable: boolean;
 };

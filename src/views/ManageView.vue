@@ -58,7 +58,7 @@ const saveCube = () => {
     }
 
     cubeStore.setCube(cube);
-    cubeStore.addToHistory(t('history.saveCube', { name: cube.name }), true);
+    cubeStore.addToHistory('history.saveCube', { name: cube.name }, true);
 };
 
 </script>

@@ -67,6 +67,9 @@ export default {
         updateCubeDimension: 'Dimension du cube mise à jour',
         updateLevelDimension: 'Dimension des niveaux mise à jour',
     },
+    information: {
+        notUndoable: 'Cette action ne peux pas être annulée. Vous pouvez uniquement retourner dans le même état que pendant l\'édition.',
+    },
     messages: {
         copiedToClipboard: 'Copié dans le presse-papiers !',
         copyError: 'Erreur lors de la copie dans le presse-papiers',

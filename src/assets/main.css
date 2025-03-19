@@ -23,6 +23,20 @@ h1 {
     color: var(--color-secondary);
 }
 
+.inline-icon {
+    margin-inline-start: var(--spacing-letter);
+}
+
+.success {
+    color: var(--color-success);
+}
+
+.error {
+    color: var(--color-error);
+}
+
+/* {{{ button */
+
 button.primary-button {
     --button-bg-color: var(--color-primary);
     --button-color: var(--color-text-primary);
@@ -51,14 +65,21 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.success {
-    color: var(--color-success);
+@media (hover: hover) {
+    a:hover {
+        background-color: var(--color-primary-inline-hover);
+    }
+
+    button:hover:not(:disabled) {
+        background-color: var(--button-bg-color-hover);
+    }
+
+    button:active:not(:disabled) {
+        background-color: var(--button-bg-color-active);
+    }
 }
 
-.error {
-    color: var(--color-error);
-}
-
+/* }}} */
 /* {{{ Form groups */
 
 .form-group {
@@ -83,20 +104,6 @@ button:disabled {
 }
 
 /* }}} */
-
-@media (hover: hover) {
-    a:hover {
-        background-color: var(--color-primary-inline-hover);
-    }
-
-    button:hover:not(:disabled) {
-        background-color: var(--button-bg-color-hover);
-    }
-
-    button:active:not(:disabled) {
-        background-color: var(--button-bg-color-active);
-    }
-}
 
 @media (min-width: 1024px) {
     body {

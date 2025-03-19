@@ -43,6 +43,7 @@ Objective: have same features as InsideWeCube
         * [ ] change orientation
         * [ ] print mode
 * [ ] Lost
+    * [ ] select the cube
     * [ ] Find the ball
         * [ ] Map selection / show possibilities
         * [ ] Instructions
@@ -60,6 +61,9 @@ Objective: have same features as InsideWeCube
 
 * [ ] Import/Export
     * Improve format compression (code for cells (single letter))
+* [ ] Manage
+    * [ ] History
+        * [ ] handle keyboard
 * [ ] Lost
     * auto detect with sound / mobile orientation
 * [ ] Play
@@ -70,5 +74,12 @@ Objective: have same features as InsideWeCube
 
 ## known bugs
 
+* [x] store
+    * [x] history should be handled by store
+    * [ ] Do not save non-named cube
+    * [ ] Do not overwrite default cube
 * [ ] History
-    * [ ] translation are not updated → store key and details
+    * [ ] there should be a first log to come back as initial
+    * [x] translation are not updated → store key and details
+    * [ ] translation are not updated (tool name, property name)
+    * [ ] title does not appear on SVG
