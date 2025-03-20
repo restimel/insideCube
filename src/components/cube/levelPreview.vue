@@ -6,15 +6,7 @@
         :height="svgSize"
         :viewBox="`-6 -6 ${15 * colMax + 6} ${15 * rowMax + 6}`"
     >
-        <defs>
-            <symbol id="hole" viewBox="0 0 11 11">
-                <circle cx="5" cy="5" r="4"
-                    class="hole"
-                />
-            </symbol>
-            <SymbolStartFlag />
-            <SymbolEndFlag />
-        </defs>
+        <SymbolsSvg />
 
         <rect
             class="level-background"
@@ -47,26 +39,14 @@
                         :width="5"
                         :height="5"
                     />
-                    <use v-if="!!cell.b"
-                        href="#hole"
-                        :x="cellIndex * 15"
-                        :y="rowIndex * 15"
-                        :width="10"
-                        :height="10"
-                    />
-                    <use v-if="isStart(rowIndex, cellIndex)"
-                        href="#startFlag"
-                        :x="cellIndex * 15"
-                        :y="rowIndex * 15"
-                        :width="10"
-                        :height="10"
-                    />
-                    <use v-if="isEnd(rowIndex, cellIndex)"
-                        href="#endFlag"
-                        :x="cellIndex * 15"
-                        :y="rowIndex * 15"
-                        :width="10"
-                        :height="10"
+
+                    <CellItemsSvg
+                        :cell="cell"
+                        :x="cellIndex"
+                        :y="rowIndex"
+                        :z="index"
+                        :start="start"
+                        :end="end"
                     />
                 </g>
             </g>
@@ -75,8 +55,8 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import SymbolStartFlag from '@/components/icons/svg/symbolStartFlag.vue';
-import SymbolEndFlag from '@/components/icons/svg/symbolEndFlag.vue';
+import SymbolsSvg from '@/components/cube/symbolsSvg.vue';
+import CellItemsSvg from '@/components/cube/cellItemsSvg.vue';
 import type { Cell, CellPosition, SimpleCellPosition } from '@/types/Cube';
 
 type Props = {
@@ -117,32 +97,6 @@ const display = computed<Map<number, Map<number, boolean>>>(() => {
 
     return cellDisplay;
 });
-
-function isStart(row: number, col: number): boolean {
-    const start = props.start;
-
-    if (!start || start.z !== props.index) {
-        return false;
-    }
-
-    return (
-        start.x === col &&
-        start.y === row
-    );
-}
-
-function isEnd(row: number, col: number): boolean {
-    const end = props.end;
-
-    if (!end || end.z !== props.index) {
-        return false;
-    }
-
-    return (
-        end.x === col &&
-        end.y === row
-    );
-}
 </script>
 <style scoped>
 .level-preview {

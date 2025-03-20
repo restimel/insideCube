@@ -17,15 +17,7 @@
             :height="200"
             :viewBox="`-6 -6 ${15 * colMax + 6} ${15 * rowMax + 6}`"
         >
-            <defs>
-                <symbol id="hole" viewBox="0 0 11 11">
-                    <circle cx="5" cy="5" r="4"
-                        class="hole"
-                    />
-                </symbol>
-                <SymbolStartFlag />
-                <SymbolEndFlag />
-            </defs>
+            <SymbolsSvg />
 
             <g v-for="(row, rowIndex) in level.cells"
                 :key="rowIndex"
@@ -43,26 +35,14 @@
                             width="10"
                             height="10"
                         />
-                        <use v-if="!!cell.b"
-                            href="#hole"
-                            :x="cellIndex * 15"
-                            :y="rowIndex * 15"
-                            :width="10"
-                            :height="10"
-                        />
-                        <use v-if="isStart(rowIndex, cellIndex)"
-                            href="#startFlag"
-                            :x="cellIndex * 15"
-                            :y="rowIndex * 15"
-                            :width="10"
-                            :height="10"
-                        />
-                        <use v-if="isEnd(rowIndex, cellIndex)"
-                            href="#endFlag"
-                            :x="cellIndex * 15"
-                            :y="rowIndex * 15"
-                            :width="10"
-                            :height="10"
+
+                        <CellItemsSvg
+                            :cell="cell"
+                            :x="cellIndex"
+                            :y="rowIndex"
+                            :z="index"
+                            :start="activeCube?.start"
+                            :end="activeCube?.end"
                         />
                     </g>
                     <rect
@@ -110,8 +90,8 @@ import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCubeStore } from '@/stores/cubeStore';
 import type { Cell } from '@/types/Cube';
-import SymbolStartFlag from '@/components/icons/svg/symbolStartFlag.vue';
-import SymbolEndFlag from '@/components/icons/svg/symbolEndFlag.vue';
+import SymbolsSvg from '@/components/cube/symbolsSvg.vue';
+import CellItemsSvg from '@/components/cube/cellItemsSvg.vue';
 
 const { t } = useI18n();
 const cubeStore = useCubeStore();
@@ -162,26 +142,6 @@ function displayCorner(cell: Cell, row: number, col: number): boolean {
 
     return !cell.r || !cell.d || !levelValue.cells[row + 1][col].r || !levelValue.cells[row][col + 1].d;
 }
-
-function isStart(row: number, col: number): boolean {
-    const start = activeCube.value!.start;
-
-    return (
-        start.z === props.index &&
-        start.x === col &&
-        start.y === row
-    );
-}
-
-function isEnd(row: number, col: number): boolean {
-    const end = activeCube.value!.end;
-
-    return (
-        end.z === props.index &&
-        end.x === col &&
-        end.y === row
-    );
-}
 </script>
 
 <style scoped>
@@ -199,11 +159,6 @@ function isEnd(row: number, col: number): boolean {
     fill: var(--cube-color1);
     stroke: var(--cube-color1);
     cursor: pointer;
-}
-
-.hole {
-    fill: var(--cube-color2);
-    stroke: none;
 }
 
 .level-right-wall,
