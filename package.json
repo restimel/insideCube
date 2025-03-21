@@ -10,7 +10,8 @@
         "test:unit": "vitest",
         "build-only": "vite build",
         "type-check": "vue-tsc --build",
-        "lint": "eslint . --fix"
+        "lint": "eslint . --fix",
+        "push": "npm run build && git push origin main && git subtree push --prefix dist origin gh-pages"
     },
     "dependencies": {
         "@thednp/position-observer": "^1.0.7",
