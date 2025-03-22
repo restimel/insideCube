@@ -1,0 +1,1 @@
+import{_ as o,c as t,a as s,o as a}from"./index-B_ouRwkG.js";const c={},n={class:"help"};function l(r,e){return a(),t("div",n,e[0]||(e[0]=[s("h1",null,"Help",-1),s("p",null,"TODO",-1)]))}const p=o(c,[["render",l],["__scopeId","data-v-9e648583"]]);export{p as default};
