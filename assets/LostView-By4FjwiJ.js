@@ -1,0 +1,1 @@
+import{_ as o,c as s,a as t,o as n}from"./index-MDkuAf7_.js";const a={},c={class:"lost"};function d(l,e){return n(),s("div",c,e[0]||(e[0]=[t("h1",null,"Lost in cube?",-1),t("p",null,"TODO: Help to find the ball.",-1)]))}const _=o(a,[["render",d],["__scopeId","data-v-ddd6b58d"]]);export{_ as default};
